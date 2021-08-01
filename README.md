@@ -47,16 +47,23 @@ This is an example of how to list things you need to use the software and how to
    ```
 2. Clone gtest submodule for testing
    ```sh
+   cd WordsCount
    git submodule init
    git submodule update
    ```
-
+2. Build
+   ```sh
+   cd .. && mkdir build && cd build
+   cmake ../WordsCount/
+   make
+   ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-* ./WordsCounter inputFile
-* ./WordsCounterTest -> for testing
+* cd build
+* src/WordsCounter inputFile
+* tst/WordsCounterTest -> for testing
 
 
 
