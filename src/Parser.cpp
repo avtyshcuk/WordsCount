@@ -1,41 +1,40 @@
 #include "Parser.h"
 
-#include <vector>
-#include <thread>
-#include <string>
+#include <algorithm>
 #include <cstring>
+#include <string>
+#include <thread>
+#include <vector>
 
 int Parser::findUniqueWords(const char *buf, size_t size)
 {
     if (size == 0) return 0;
 
-    const unsigned threadCount{std::thread::hardware_concurrency()};
+    unsigned threadCount{std::thread::hardware_concurrency()};
 
     // When thread "magic" is not applicable
     const auto minChunk{1024};
     if (size < minChunk * threadCount) {
-        parse(buf, buf + size);
-        return words.size();
+        threadCount = 1;
     }
 
     // TODO: move one chunk to the main thread
     std::vector<std::thread> threads;
     auto* left = buf;
     auto* end = buf + size;
-    const auto chunk{size / threadCount};
+    const auto chunkSize{size / threadCount};
 
-    for (size_t i{}; i < threadCount; ++i) {
-        auto size = left + chunk;
-        auto* right = size > end ? end : size;
+    while (threadCount > 0 && left < end) {
+        auto* right = std::min(left + chunkSize, end);
 
         // Trick to make sure chunk is aligned by word's edge
         // NOTE: will drastically drop perf for long words!
-        while (right != end && *right != delimeter) { right++; }
+        right = std::find(right, end, delimeter);
 
         threads.emplace_back(&Parser::parse, this, left, right);
 
-        if (right == end) break;
         left = right + 1;
+        --threadCount;
     }
 
     for (auto& thread : threads) {
@@ -47,10 +46,9 @@ int Parser::findUniqueWords(const char *buf, size_t size)
 
 void Parser::parse(const char* start, const char* end)
 {
-    for (const char* ptr = start; ptr < end; ++ptr) {
-        start = ptr;
-        ptr = static_cast<const char*>(memchr(ptr, delimeter, end - ptr));
-        unsigned long strSize = (ptr ? ptr : end) - start;
+    while (start && start < end) {
+        auto* localEnd = static_cast<const char*>(memchr(start, delimeter, end - start));
+        unsigned long strSize = (localEnd ? localEnd : end) - start;
 
         const std::string word{start, strSize};
         if (words.find(word) == words.end()) {
@@ -58,6 +56,6 @@ void Parser::parse(const char* start, const char* end)
             words.insert(word);
         }
 
-        if (!ptr) break;
+        start += strSize + 1;
     }
 }

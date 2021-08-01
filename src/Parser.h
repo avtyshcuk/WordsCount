@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <mutex>
 #include <unordered_set>
 #include <string>
-#include <mutex>
 
 class Parser
 {

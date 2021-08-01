@@ -1,7 +1,8 @@
 #include "gtest/gtest.h"
 
-#include <fstream>
+#include <algorithm>
 #include <cstdio>
+#include <fstream>
 
 #include "File.h"
 #include "Parser.h"
@@ -31,18 +32,8 @@ protected:
         std::string word{testWord};
         for (size_t i{}; i < wordsCount; ++i) {
             file << word << ' ';
-            shuffle(word);
+            std::rotate(word.rbegin(), word.rbegin() + 1, word.rend());
         }
-    }
-
-private:
-    void shuffle(std::string& str)
-    {
-        auto tmp = str.back();
-        for (size_t i{str.size() - 1}; i > 0; --i) {
-            str[i] = str[i - 1];
-        }
-        str.front() = tmp;
     }
 
 protected:
@@ -81,24 +72,24 @@ TEST_F(WordsCounterTest, parseOnePhrase)
 
 TEST_F(WordsCounterTest, parseSmallFile)
 {
-    // With size about 1 MB - 1048576 bytes
-    prepareComplexFile(1048576);
+    // With size about 1 MB
+    prepareComplexFile(1e6);
     File file{testFileName.c_str()};
     EXPECT_EQ(parser.findUniqueWords(file.buffer(), file.size()), testWord.size());
 }
 
 TEST_F(WordsCounterTest, parseMidFile)
 {
-    // With size about 1 GB - 1073741824 bytes
-    prepareComplexFile(1073741824);
+    // With size about 1 GB
+    prepareComplexFile(1e9);
     File file{testFileName.c_str()};
     EXPECT_EQ(parser.findUniqueWords(file.buffer(), file.size()), testWord.size());
 }
 
 TEST_F(WordsCounterTest, parseLargeFile)
 {
-    // With size about 10 GB - 10737418240 bytes
-    prepareComplexFile(10737418240);
+    // With size about 32 GB
+    prepareComplexFile(32e9);
     File file{testFileName.c_str()};
     EXPECT_EQ(testWord.size(), parser.findUniqueWords(file.buffer(), file.size()));
 }

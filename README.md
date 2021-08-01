@@ -33,7 +33,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+No particular dependencies, C++14 compatible compiler and 3.16.3+ CMake as a build system
 * cmake
   ```sh
   https://cmake.org/install/
@@ -55,21 +55,21 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    cd .. && mkdir build && cd build
    cmake ../WordsCount/
-   make
+   cmake --build .
    ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-
+   ```sh
 * cd build
 * src/WordsCounter inputFile
 * tst/WordsCounterTest -> for testing
-
+   ```
 
 
 <!-- ROADMAP -->
 ## Roadmap
-
+ 
 * To simplify multithreading approach main thread capabilities are not explicitly used - program creates +1 thread
 * To be aligned by word's edge iteration till blank whitespace is performed, for "one long word" it may be slow
 
