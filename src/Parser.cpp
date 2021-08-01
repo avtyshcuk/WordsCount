@@ -24,7 +24,7 @@ int Parser::findUniqueWords(const char *buf, size_t size)
     auto* end = buf + size;
     const auto chunkSize{size / threadCount};
 
-    while (threadCount > 0 && left < end) {
+    while (left < end) {
         auto* right = std::min(left + chunkSize, end);
 
         // Trick to make sure chunk is aligned by word's edge
@@ -34,7 +34,6 @@ int Parser::findUniqueWords(const char *buf, size_t size)
         threads.emplace_back(&Parser::parse, this, left, right);
 
         left = right + 1;
-        --threadCount;
     }
 
     for (auto& thread : threads) {
