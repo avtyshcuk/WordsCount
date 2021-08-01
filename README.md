@@ -55,15 +55,15 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-./WordsCounter inputFile
-./WordsCounterTest -> for testing
+* ./WordsCounter inputFile
+* ./WordsCounterTest -> for testing
 
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
-To simplify multithreading approach main thread capabilities are not explicitly used - program creates +1 thread
-To be aligned by word's edge iteration till blank whitespace is performed, for "one long word" it may be slow
+* To simplify multithreading approach main thread capabilities are not explicitly used - program creates +1 thread
+* To be aligned by word's edge iteration till blank whitespace is performed, for "one long word" it may be slow
 
 
